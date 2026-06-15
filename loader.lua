@@ -2,7 +2,7 @@ local gameId = game.GameId
 if gameId == 1087859240 then
     pcall(function()
         loadstring(game:HttpGet(
-            "https://github.com/fagngafuckmeinthetesla/HYDROXIDE/main/ROGUE/rogue_ui.lua",
+            "https://raw.githubusercontent.com/fagngafuckmeinthetesla/HYDROXIDE/refs/heads/main/ROGUE/rogue_ui.lua",
             true
         ))()
     end)
