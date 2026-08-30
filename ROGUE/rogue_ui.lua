@@ -304,6 +304,7 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
 
     local is_gaia = game.PlaceId == 5208655184;
     local is_khei = game.PlaceId == 3541987450 or game.PlaceId == 14341521240;
+	warn(is_khei)
 
     local updatePlayerLabel, getPlayerColor
     local last_area_restore = nil
