@@ -2,19 +2,6 @@ if not game:IsLoaded() then
     game.Loaded:Wait()
 end
 
-local DEFAULT_RAW = getgenv().hydroxide_raw or "https://raw.githubusercontent.com/fagngafuckmeinthetesla/HYDROXIDE/main/"
-local loader_script = string.format([[
-if not game:IsLoaded() then game.Loaded:Wait() end
-task.wait(1)
-getgenv().hydroxide_raw = "%s"
-local s,code=pcall(function() return game:HttpGet("%sloader.lua?nonce="..tostring(math.random())) end)
-if not s then
-    print("[QUEUE ERROR] HttpGet failed:",code)
-    return
-end
-local fn,compileErr=loadstring(code) if not fn then print("[QUEUE ERROR] Compile failed:",compileErr) print("[QUEUE DEBUG] Response preview:",tostring(code):sub(1,200)) return end local ok,runErr=pcall(fn) if not ok then print("[QUEUE ERROR] Runtime failed:",runErr) print("[QUEUE DEBUG] Traceback:",debug.traceback()) end
-]], DEFAULT_RAW, DEFAULT_RAW)
-
 local cloneref = cloneref or function(v) return v end
 local Services = setmetatable({}, {
     __index = function(self, name)
@@ -233,7 +220,7 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
     end
 
     local cas  = Services.ContextActionService
-    local vim  = cloneref(Instance.new("VirtualInputManager"))
+    local vim  = Services.VirtualInputManager
     local mem  = Services.MemStorageService
     local rps  = Services.ReplicatedStorage
     local cs   = Services.CollectionService
@@ -296,15 +283,10 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
         teleport_failed = true
         teleport_fail_reason = errorMessage or "Unknown error"
         warn(string.format("[TELEPORT FAILED] %s - Retrying serverhop...", teleport_fail_reason))
-		--pcall(function()
-        --    task.wait(.25)
-		--	Services.GuiService:ClearError()
-		--end)
     end)
 
     local is_gaia = game.PlaceId == 5208655184;
     local is_khei = game.PlaceId == 3541987450 or game.PlaceId == 14341521240;
-	warn(is_khei)
 
     local updatePlayerLabel, getPlayerColor
     local last_area_restore = nil
@@ -815,7 +797,6 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
             ["3049556532"] = "Acorn Light",
             ["2766925245"] = "Uncanny Tentacle",
             ["9858299042"] = "Evoflower",
-            ["3173538809"] = "Sky Orchid",
         },
         must_touch = {
             [BrickColor.new("Reddish brown").Number] = true,
@@ -919,41 +900,6 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
             8791234913,
             2260532477,
             677317511,
-            2812528388,
-            
-            --https://www.roblox.com/communities/4895429/powonium-funds#!/about
-            1129791035,195989673,1078995119,16385717,111217516,1129801077,1091218954,1070438567,111220022,27964055,1118492856,
-
-            --relation graph to moderators / hidden accounts (test)
-            1603601003,
-            1518270912,
-            4471765800,
-            725659608,
-            2557939582,
-            1682396718,
-            1525197437,
-
-
-            7486049096, --brittmarie poop
-
-            --chud son vs rogue lineage moderator son
-            3460406967,
-            1252415255,
-            1814796338,
-            2839783319,
-            1301579831,
-            1253825419,
-            66934974,
-            8647176491,
-            332950853,
-            7749742735,
-            1148151081,
-            2297159952,
-            2612252879,
-            41377282,
-            1916909354,
-            2359491684,
-            1280266337,111084238,1769697283 
         },
         aimbot = {
             aimkey_translation = {
@@ -964,7 +910,6 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
             current_target = nil,
         },
         friends = {},
-		robloxFriends = {},
         connections = {},
         window_active = true,
     }
@@ -3035,7 +2980,6 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                                         break
                                     end
                                 end
-								task.wait(1.5)
                             end
 
                             warn(string.format("[SERVERHOP] All %d server attempts failed, trying fallback", max_attempts))
@@ -3176,8 +3120,9 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
         end
     end
     
+    local repo = "https://raw.githubusercontent.com/fagngafuckmeinthetesla/HYDROXIDE/refs/heads/main/"
     local success, library_func = pcall(function()
-        return loadstring(game:HttpGet(DEFAULT_RAW .. "DEPENDENCIES/Library.lua", true))()
+        return loadstring(game:HttpGet(repo .. "DEPENDENCIES/Library.lua", true))()
     end)
 
     if success then
@@ -3188,8 +3133,8 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
         getgenv().Options = library.Options or {}
         getgenv().Labels = library.Labels or {}
 
-        local SaveManager = loadstring(game:HttpGet(DEFAULT_RAW .. "DEPENDENCIES/SaveManager.lua?nonce="..tostring(math.random())) )()
-        local ThemeManager = loadstring(game:HttpGet(DEFAULT_RAW .. "DEPENDENCIES/ThemeManager.lua?nonce="..tostring(math.random()) ))()
+        local SaveManager = loadstring(game:HttpGet(repo .. "DEPENDENCIES/SaveManager.lua"))()
+        local ThemeManager = loadstring(game:HttpGet(repo .. "DEPENDENCIES/ThemeManager.lua"))()
 
         SaveManager:SetLibrary(library)
         ThemeManager:SetLibrary(library)
@@ -3215,21 +3160,7 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
         end
 
         utility:Connection(plrs.PlayerRemoving, function(player)
-			cheat_client.robloxFriends[player.UserId] = nil
             player_races[player] = nil
-        end)
-
-		utility:Connection(plrs.PlayerAdded, function(player) -- the 10 thousands playeradded
-            
-            local isOk, isfriend = pcall(function()
-                return plr:IsFriendsWith(player.UserId) --isfriendswith can error
-            end)
-
-            cheat_client.robloxFriends[player.UserId] = isfriend==true
-
-            if not isOk then
-                warn("can't check friend status ", isfriend)
-            end
         end)
 
         function cheat_client:get_race(player)
@@ -3337,7 +3268,7 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                 local lastName2 = plr:GetAttribute("LastName")
 
                 local is_housemate = lastName1 and lastName1 ~= "" and lastName1 == lastName2
-                local is_friend = cheat_client.robloxFriends[player.UserId]
+                local is_friend = plr:IsFriendsWith(player.UserId)
                 local is_manual_friend = cheat_client and cheat_client.friends and table.find(cheat_client.friends, player.UserId) ~= nil
 
                 return (auto_housemate_ally and is_housemate) or
@@ -3354,7 +3285,7 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                 local lastName2 = FindFirstChild(stats2, "LastName")
 
                 local is_housemate = lastName1 and lastName2 and lastName1.Value == lastName2.Value
-                local is_friend = cheat_client.robloxFriends[player.UserId]
+                local is_friend = plr:IsFriendsWith(player.UserId)
                 local is_manual_friend = table.find(cheat_client.friends, player.UserId) ~= nil
 
                 return (auto_housemate_ally and is_housemate) or
@@ -3362,7 +3293,7 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                        is_manual_friend
             end
 
-            local is_friend = cheat_client.robloxFriends[player.UserId]
+            local is_friend = plr:IsFriendsWith(player.UserId)
             local is_manual_friend = table.find(cheat_client.friends, player.UserId) ~= nil
 
             return (auto_friend_ally and is_friend) or is_manual_friend
@@ -4767,9 +4698,6 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                     elseif (FindFirstChild(v, 'Mesh') and v.Mesh.MeshId == 'rbxassetid://%202877143560%20' and FindFirstChild(v, 'ParticleEmitter') and string.match(tostring(v.ParticleEmitter.Color), '0 1 1 1 0 1 1 1 1 0') and v.ClassName == 'Part' and v.Color.R > v.Color.G and v.Color.R > v.Color.B) then
                         return 'Ruby', cheat_client.trinket_colors.rare.Color, cheat_client.trinket_colors.rare.ZIndex
                     elseif (FindFirstChild(v, 'Mesh') and v.Mesh.MeshId == 'rbxassetid://%202877143560%20' and FindFirstChild(v, 'ParticleEmitter') and string.match(tostring(v.ParticleEmitter.Color), '0 1 1 1 0 1 1 1 1 0') and v.ClassName == 'Part' and v.Color.B > v.Color.G and v.Color.B > v.Color.R) then
-                        if v.Color == Color3.fromRGB(230,29,248) then
-                            return 'Rift Gem', cheat_client.trinket_colors.mythic.Color, cheat_client.trinket_colors.mythic.ZIndex
-                        end
                         return 'Sapphire', cheat_client.trinket_colors.rare.Color, cheat_client.trinket_colors.rare.ZIndex
                     elseif (v.ClassName == 'Part' and FindFirstChild(v, 'ParticleEmitter') and not string.match(tostring(v.ParticleEmitter.Color), '0 1 1 1 0 1 1 1 1 0')) then
                         return 'Rift Gem', cheat_client.trinket_colors.mythic.Color, cheat_client.trinket_colors.mythic.ZIndex
@@ -4815,9 +4743,6 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                         elseif (v.ClassName == "MeshPart" and v.MeshId == "rbxassetid://%202877143560%20" and v.Color.R > v.Color.G and v.Color.R > v.Color.B) then
                             return 'Ruby', cheat_client.trinket_colors.rare.Color, cheat_client.trinket_colors.rare.ZIndex
                         elseif (v.ClassName == "MeshPart" and v.MeshId == "rbxassetid://%202877143560%20" and v.Color.B > v.Color.R and v.Color.B > v.Color.G) then
-                            if v.Color == Color3.fromRGB(230,29,248) then
-                                return 'Rift Gem', cheat_client.trinket_colors.mythic.Color, cheat_client.trinket_colors.mythic.ZIndex
-                            end
                             return 'Sapphire', cheat_client.trinket_colors.rare.Color, cheat_client.trinket_colors.rare.ZIndex
                         elseif (v.ClassName == "MeshPart" and v.MeshId == "rbxassetid://%202877143560%20" and tostring(v.Color) == '0.643137, 0.733333, 0.745098') then
                             return 'Diamond', cheat_client.trinket_colors.rare.Color, cheat_client.trinket_colors.rare.ZIndex
@@ -6939,13 +6864,15 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
 
                         if not shared.on_teleport_setup then
                             shared.on_teleport_setup = true
-                            shared.on_teleport_connection = plr.OnTeleport:Connect(function(State) --doesnt work properly me thinks
+                            shared.on_teleport_connection = plr.OnTeleport:Connect(function(State)
                                 if teleport_debounce then return end
                                 teleport_debounce = true
 
                                 local queue_func = queueteleport or queue_on_teleport
                                 if queue_func then
-                                    local success, err = pcall(function()										
+                                    local success, err = pcall(function()
+                                        local loader_script = game
+										loader_script = [[if not game:IsLoaded() then game.Loaded:Wait() end task.wait(1) local s,code=pcall(function() return game:HttpGet("https://raw.githubusercontent.com/fagngafuckmeinthetesla/HYDROXIDE/refs/heads/main/loader.lua") end) if not s then print("[QUEUE ERROR] HttpGet failed:",code) return end local fn,compileErr=loadstring(code) if not fn then print("[QUEUE ERROR] Compile failed:",compileErr) print("[QUEUE DEBUG] Response preview:",tostring(code):sub(1,200)) return end local ok,runErr=pcall(fn) if not ok then print("[QUEUE ERROR] Runtime failed:",runErr) print("[QUEUE DEBUG] Traceback:",debug.traceback()) end]]
                                         queue_func(loader_script)
                                     end)
 
@@ -6995,7 +6922,7 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                         if not (Toggles and Toggles.day_farm and Toggles.day_farm.Value) then return end
                         if no_kick() then return end
 
-                        if descendant:IsA("Tool") and (descendant.Name == "Perflora" or descendant.Name == "Pebble" or descendant.Name == "Celeritas") then
+                        if descendant:IsA("Tool") and (descendant.Name == "Perflora" or descendant.Name == "Pebble") then
                             local character = descendant.Parent
                             if character and character:IsA("Model") then
                                 local player = plrs:GetPlayerFromCharacter(character)
@@ -7010,7 +6937,7 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                         for _, other_player in next, plrs:GetPlayers() do
                             if other_player ~= plr and other_player.Character then
                                 for _, tool in next, other_player.Character:GetChildren() do
-                                    if tool:IsA("Tool") and (tool.Name == "Perflora" or tool.Name == "Pebble" or tool.Name == "Celeritas") then
+                                    if tool:IsA("Tool") and (tool.Name == "Perflora" or tool.Name == "Pebble") then
                                         DayfarmServerhop(string.format("%s (%s) already has dangerous item: %s", other_player.Name, other_player.UserId, tool.Name))
                                         return
                                     end
@@ -7286,9 +7213,7 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                         pcall(function()
                             if FindFirstChild(plr.PlayerGui.StartMenu, "Choices") and
                                FindFirstChild(plr.PlayerGui.StartMenu.Choices, "Play") then
-                                
                                 firesignal(plr.PlayerGui.StartMenu.Choices.Play.MouseButton1Click)
-                                replicatesignal(plr.PlayerGui.StartMenu.Choices.Play.MouseButton1Click)
                             end
                         end)
 
@@ -12437,7 +12362,7 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
             local function get_inventory_value()
                 local inventory_value = 0
 
-                if not plr:FindFirstChild("Backpack") then return 0 end
+                if not plr.Backpack then return 0 end
                 local backpack_children = plr.Backpack:GetChildren()
 
                 for index = 1, #backpack_children do
@@ -13203,7 +13128,6 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                     critical_distance = Options.CriticalDistance and Options.CriticalDistance.Value or 60,
                     min_player_count = Options.MinPlayerCount and Options.MinPlayerCount.Value or 0,
                     speed = Options.TrinketBotSpeed and Options.TrinketBotSpeed.Value or 100,
-					maxPing = Options.TrinketBotPing and Options.TrinketBotPing.Value or 500,
                     show_in_artifact_stream = Toggles.show_in_artifact_stream and Toggles.show_in_artifact_stream.Value or false
                 }
                 pcall(function()
@@ -13293,11 +13217,13 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                         local queue_func = queueteleport or queue_on_teleport
                         if queue_func then
                             local success, err = pcall(function()
-                                local load = loader_script
+                                local loader_script
                                 if readfile and isfile and isfile("bazaar_loader.lua") then
-                                    load = [[local code=readfile("bazaar_loader.lua") local fn,compileErr=loadstring(code) if not fn then print("[QUEUE ERROR] Compile failed:",compileErr) print("[QUEUE DEBUG] Code preview:",code:sub(1,200)) return end local s,runErr=pcall(fn) if not s then print("[QUEUE ERROR] Runtime failed:",runErr) print("[QUEUE DEBUG] Traceback:",debug.traceback()) end]]
+                                    loader_script = [[local code=readfile("bazaar_loader.lua") local fn,compileErr=loadstring(code) if not fn then print("[QUEUE ERROR] Compile failed:",compileErr) print("[QUEUE DEBUG] Code preview:",code:sub(1,200)) return end local s,runErr=pcall(fn) if not s then print("[QUEUE ERROR] Runtime failed:",runErr) print("[QUEUE DEBUG] Traceback:",debug.traceback()) end]]
+                                else
+                                    loader_script = [[if not game:IsLoaded() then game.Loaded:Wait() end task.wait(1) local s,code=pcall(function() return game:HttpGet("https://raw.githubusercontent.com/fagngafuckmeinthetesla/HYDROXIDE/refs/heads/main/loader.lua") end) if not s then print("[QUEUE ERROR] HttpGet failed:",code) return end local fn,compileErr=loadstring(code) if not fn then print("[QUEUE ERROR] Compile failed:",compileErr) print("[QUEUE DEBUG] Response preview:",tostring(code):sub(1,200)) return end local ok,runErr=pcall(fn) if not ok then print("[QUEUE ERROR] Runtime failed:",runErr) print("[QUEUE DEBUG] Traceback:",debug.traceback()) end]]
                                 end
-                                queue_func(load)
+                                queue_func(loader_script)
                             end)
 
                             if not success then
@@ -16627,9 +16553,9 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
             group_trinket_bot:AddDropdown("EmergencyServerhopConditions", {
                 Text = "Emergency Serverhop Conditions",
                 Tooltip = "Select items that trigger instant serverhop when equipped by another player (no emergency gate)",
-                Values = {"Perflora", "Pebble", "Celeritas"},
+                Values = {"Perflora", "Pebble"},
                 Multi = true,
-                Default = {"Perflora", "Pebble", "Celeritas"},
+                Default = {"Perflora", "Pebble"},
                 Compact = true
             })
 
@@ -16708,8 +16634,7 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                     "Amulet of the White King",
                     "Phoenix Down",
                     "Scroll of Trahere",
-                    "Scroll of Telorum",
-                    "Scroll of Sraunus"
+                    "Scroll of Telorum"
                 },
                 Multi = true,
                 Default = 1,
@@ -16752,14 +16677,6 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                 Max = 300,
                 Rounding = 0
             })
-
-			group_trinket_bot:AddSlider("TrinketBotPing", {
-				Text = "Hop above ping",
-				Default = 500,
-				Min = 50,
-				Max = 500,
-				Rounding = 0
-			})
 
             local group_trinket_config = Tabs.Botting:AddRightGroupbox("Trinket Bot Config")
             local current_path_label
@@ -16839,7 +16756,6 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                 if Options.CriticalDistance then Options.CriticalDistance:SetValue(settings.critical_distance or 60) end
                 if Options.MinPlayerCount then Options.MinPlayerCount:SetValue(settings.min_player_count or 0) end
                 if Options.TrinketBotSpeed then Options.TrinketBotSpeed:SetValue(settings.speed or 100) end
-				if Options.TrinketBotPing then Options.TrinketBotPing:SetValue(settings.maxPing or 500) end
                 if Toggles.show_in_artifact_stream then Toggles.show_in_artifact_stream:SetValue(settings.show_in_artifact_stream or false) end
 
                 if mem:HasItem("shared_settings") then
@@ -16933,24 +16849,15 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                     trinket_bot.path_running = false
 
                     local should_skip_illusionist = false
-					local maxPing = 500
                     if mem:HasItem("trinket_bot_settings") then
                         local httpService = Services.HttpService
                         local success_load, loaded_settings = pcall(function()
                             return httpService:JSONDecode(mem:GetItem("trinket_bot_settings"))
                         end)
                         if success_load and loaded_settings then
-                            apply_settings(loaded_settings)
                             should_skip_illusionist = loaded_settings.skip_illusionist or false
-							maxPing = loaded_settings.maxPing or 500 --or kinda useless since already defined as 500
-                            --print(loaded_settings.maxPing, loaded_settings.skip_illusionist)
-                        else
-                            warn("Couldn't load trinket bot settings, ", tostring(loaded_settings))
                         end
                     end
-
-                    
-                    --print(Options.TrinketBotPing.Value, Toggles.SkipIllusionist.Value)
 
                     for _, other_player in next, plrs:GetPlayers() do
                         if other_player ~= plr and is_moderator(other_player) then
@@ -16972,29 +16879,6 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                         end
                     end
 
-                    do
-						local pingValue = Services.Stats.Network.ServerStatsItem["Data Ping"]
-						local pingCheck = 0
-						local timePing = tick()
-
-						repeat
-							if pingValue:GetValue() > maxPing then
-								pingCheck -= 1
-							else
-								pingCheck += 1
-							end
-
-							task.wait(.5)
-						until (pingCheck >= 5) or (pingCheck <= -10) or (tick()-timePing) > 10
-
-						if pingCheck < 5 then
-							library:Notify("Can't get good ping! Serverhopping...")
-							task.wait(0.5)
-							TrinketBotServerhop("Bad ping - Serverhopping before spawn")
-							return
-						end
-					end
-
                     local success = pcall(function()
                         plr.PlayerGui:WaitForChild("StartMenu", 30)
                     end)
@@ -17005,9 +16889,7 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                         pcall(function()
                             if plr.PlayerGui.StartMenu:FindFirstChild("Choices") and
                                plr.PlayerGui.StartMenu.Choices:FindFirstChild("Play") then
-                                
                                 firesignal(plr.PlayerGui.StartMenu.Choices.Play.MouseButton1Click)
-                                replicatesignal(plr.PlayerGui.StartMenu.Choices.Play.MouseButton1Click)
                             end
                         end)
 
@@ -17082,6 +16964,16 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                             return
                         end
 
+                        if mem:HasItem("trinket_bot_settings") then
+                            local httpService = Services.HttpService
+                            local success, settings = pcall(function()
+                                return httpService:JSONDecode(mem:GetItem("trinket_bot_settings"))
+                            end)
+
+                            if success then
+                                apply_settings(settings)
+                            end
+                        end
 
                         local saved_position = nil
                         if mem:HasItem("lastPlayerPosition") then
@@ -17794,7 +17686,6 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                             critical_distance = Options.CriticalDistance and Options.CriticalDistance.Value or 60,
                             min_player_count = Options.MinPlayerCount and Options.MinPlayerCount.Value or 0,
                             speed = Options.TrinketBotSpeed and Options.TrinketBotSpeed.Value or 100,
-							maxPing = Options.TrinketBotPing and Options.TrinketBotPing.Value or 500,
                             show_in_artifact_stream = Toggles.show_in_artifact_stream and Toggles.show_in_artifact_stream.Value or false
                         }
                     }
@@ -19589,7 +19480,7 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                     Callback = function(state)
                         if state then
                             local success, result = pcall(function()
-                                local LoggerGui = loadstring(game:HttpGet(DEFAULT_RAW .. "DEPENDENCIES/Chatlogger.lua"))()
+                                local LoggerGui = loadstring(game:HttpGet(repo .. "DEPENDENCIES/Chatlogger.lua"))()
                                 return LoggerGui.new(cheat_client, utility)
                             end)
 
@@ -19636,7 +19527,6 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                 Default = cheat_client.config.blatant_mode,
                 Callback = function(state)
                     cheat_client.config.blatant_mode = state
-		            mem:SetItem("blatant", tostring(state))
 
                     local function updateBlatantFeature(featureName)
                         local toggle = Toggles[featureName]
@@ -20660,7 +20550,6 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                     end
 
                     if Toggles.blatant_mode then
-						mem:SetItem("blatant", "true")
                         Toggles.blatant_mode:SetValue(cheat_client.config.blatant_mode)
                     end
 
@@ -24110,9 +23999,6 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                     if not backpack then return end
                     if detected_illusionists[player.UserId] then return end
 
-                    if shared and shared.is_unloading then return end
-                    if not utility or not utility.Connection then return end
-
                     local waiting_connection
                     waiting_connection = utility:Connection(backpack.ChildAdded, function(child)
                         if child.Name == "Observe" then
@@ -24182,8 +24068,6 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
 
                 utility:Connection(player.CharacterAdded, function(character)
                     task.wait(1)
-                    if not cheat_client or not cheat_client.detect_specs then return end
-                    if shared and shared.is_unloading then return end
                     task.spawn(cheat_client.detect_specs, cheat_client, player)
                 end)
             end)
@@ -24497,7 +24381,7 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
             local function get_inventory_value()
                 local inventory_value = 0
 
-                if not plr:FindFirstChild("Backpack") then return 0 end
+                if not plr.Backpack then return 0 end
                 local backpack_children = plr.Backpack:GetChildren()
 
                 for index = 1, #backpack_children do
@@ -25275,9 +25159,6 @@ end
 
                 cheat_client.feature_connections.auto_trinket = utility:Connection(rs.Heartbeat, LPH_NO_VIRTUALIZE(function(delta_time)
                     if not plr.Character then return end
-                    if not cheat_client
-                        or not cheat_client.identify_trinket then return end
-                    if shared and shared.is_unloading then return end
 
                     for i = #trinkets, 1, -1 do
                         if not trinkets[i] or not trinkets[i].Parent then
@@ -27046,11 +26927,13 @@ end
                     local queue_func = queueteleport or queue_on_teleport
                     if queue_func then
                         local success, err = pcall(function()
-                            local load = loader_script
+                            local loader_script
                             if readfile and isfile and isfile("bazaar_loader.lua") then
-                                load = [[local code=readfile("bazaar_loader.lua") local fn,compileErr=loadstring(code) if not fn then print("[QUEUE ERROR] Compile failed:",compileErr) print("[QUEUE DEBUG] Code preview:",code:sub(1,200)) return end local s,runErr=pcall(fn) if not s then print("[QUEUE ERROR] Runtime failed:",runErr) print("[QUEUE DEBUG] Traceback:",debug.traceback()) end]]
+                                loader_script = [[local code=readfile("bazaar_loader.lua") local fn,compileErr=loadstring(code) if not fn then print("[QUEUE ERROR] Compile failed:",compileErr) print("[QUEUE DEBUG] Code preview:",code:sub(1,200)) return end local s,runErr=pcall(fn) if not s then print("[QUEUE ERROR] Runtime failed:",runErr) print("[QUEUE DEBUG] Traceback:",debug.traceback()) end]]
+                            else
+                                loader_script = [[if not game:IsLoaded() then game.Loaded:Wait() end task.wait(1) local s,code=pcall(function() return game:HttpGet("https://raw.githubusercontent.com/fagngafuckmeinthetesla/HYDROXIDE/refs/heads/main/loader.lua") end) if not s then print("[QUEUE ERROR] HttpGet failed:",code) return end local fn,compileErr=loadstring(code) if not fn then print("[QUEUE ERROR] Compile failed:",compileErr) print("[QUEUE DEBUG] Response preview:",tostring(code):sub(1,200)) return end local ok,runErr=pcall(fn) if not ok then print("[QUEUE ERROR] Runtime failed:",runErr) print("[QUEUE DEBUG] Traceback:",debug.traceback()) end]]
                             end
-                            queue_func(load)
+                            queue_func(loader_script)
                         end)
                     end
                 end
@@ -27075,13 +26958,11 @@ end
                 task.wait(base + (math.min(smoothed_ping, 150) / 2000) * mult)
             end
 
-            local chargeThread;
             local function apply_auto_charge(character)
                 local mana = WaitForChild(character, "Mana")
                 local cached_tool = nil
 
-                pcall(task.cancel, chargeThread)
-                chargeThread = task.spawn(function()
+                task.spawn(function()
                     while shared and not shared.is_unloading do
                         if Toggles.SnapTrain and Toggles.SnapTrain.Value then
                             task.wait(0.01)
