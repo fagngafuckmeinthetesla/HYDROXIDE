@@ -283,10 +283,8 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
         teleport_failed = true
         teleport_fail_reason = errorMessage or "Unknown error"
         warn(string.format("[TELEPORT FAILED] %s - Retrying serverhop...", teleport_fail_reason))
-		pcall(function()
-            task.wait(.25)
-			Services.GuiService:ClearError()
-		end)
+		task.wait(.25)
+		Services.GuiService:ClearError()
     end)
 
     local is_gaia = game.PlaceId == 5208655184;
