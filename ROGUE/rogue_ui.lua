@@ -13720,7 +13720,7 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                 pending_pickup_ids = trinket_bot.pending_pickup_ids
 
                 if Toggles.auto_trinket then
-                    Toggles.auto_trinket:SetValue(false)
+                 --   Toggles.auto_trinket:SetValue(false)
                 end
 
                 if not test_mode then
