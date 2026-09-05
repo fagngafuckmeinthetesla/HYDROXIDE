@@ -5655,290 +5655,156 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
 
         do
             local function set_ambience(area)
-                local biome = area_data.biomes[area]
-                if biome then
-                    local area_color
-                    if biome == "desert" or biome == "oasis" then
-                        area_color = lit.desertcolor
-                    elseif biome == "tundraoutside" then
-                        area_color = lit.tundracolor
-                    elseif biome == "tundrainside" or biome == "tundracastle" then
-                        area_color = lit.tundrainsidecolor
-                    elseif biome == "lava" then
-                        area_color = lit.lavacolor
-                    else
-                        area_color = lit.defaultcolor
-                    end
-                    if area_color ~= nil then
-                        lit.areacolor.Brightness = area_color.Brightness
-                        lit.areacolor.Contrast = area_color.Contrast
-                        lit.areacolor.Saturation = area_color.Saturation
-                        lit.areacolor.TintColor = area_color.TintColor
-                    end
-                    local sun_rays = false
-                    if biome ~= "tundrainside" then
-                        sun_rays = false
-                        if biome ~= "tundraoutside" then
-                            sun_rays = biome ~= "tundracastle"
-                        end
-                    end
+                local biomeData = area_data.biomes[area]
+                if not biomeData then return end
 
-                    if biome == "forest_seasonal" then
-                        biome = FindFirstChild(workspace, "GaiaFallDecor") and "forestfall" or FindFirstChild(workspace, "GaiaWinterDecor") and "forestwinter" or "forest";
-                    end;
+                local biome = biomeData.biomeName
 
-                    lit.SunRays.Enabled = sun_rays
-                    local ambience = nil
-                    local brightness = nil
-                    local outdoor_ambience = nil
-                    local fog = nil
-                    local fog_color = nil
-                    if biome == "forest" then
-                        ambience = {
-                            Ambient = Color3.fromRGB(20, 20, 20)
-                        }
-                        brightness = {
-                            Value = 1.15
-                        }
-                        outdoor_ambience = {
-                            Value = Color3.fromRGB(163, 181, 177)
-                        }
-                        fog = {
-                            FogStart = 0, 
-                            FogEnd = 750
-                        }
-                        fog_color = {
-                            Value = Color3.fromRGB(91, 159, 157)
-                        }
-                    elseif biome == "darkforest" then
-                        ambience = {
-                            Ambient = Color3.fromRGB(20, 20, 20)
-                        }
-                        brightness = {
-                            Value = 0.6
-                        }
-                        outdoor_ambience = {
-                            Value = Color3.fromRGB(163, 181, 177)
-                        }
-                        fog = {
-                            FogStart = 0, 
-                            FogEnd = 120
-                        }
-                        fog_color = {
-                            Value = Color3.fromRGB(25, 85, 60)
-                        }
-                    elseif biome == "cave" or biome == "theabyss" then
-                        ambience = {
-                            Ambient = Color3.fromRGB(20, 20, 20)
-                        }
-                        brightness = {
-                            Value = 0
-                        }
-                        outdoor_ambience = {
-                            Value = Color3.fromRGB(11, 13, 12)
-                        }
-                        fog = {
-                            FogStart = 0, 
-                            FogEnd = 80
-                        }
-                        fog_color = {
-                            Value = Color3.fromRGB(25, 44, 43)
-                        }
-                    elseif biome == "darkcave" then
-                        ambience = {
-                            Ambient = Color3.fromRGB(20, 20, 20)
-                        }
-                        brightness = {
-                            Value = 0
-                        }
-                        outdoor_ambience = {
-                            Value = Color3.fromRGB(11, 13, 12)
-                        }
-                        fog = {
-                            FogStart = 0, 
-                            FogEnd = 50
-                        }
-                        fog_color = {
-                            Value = Color3.fromRGB(17, 17, 17)
-                        }
-                    elseif biome == "desert" or biome == "oasis" then
-                        ambience = {
-                            Ambient = Color3.fromRGB(20, 20, 20)
-                        }
-                        brightness = {
-                            Value = 1.25
-                        }
-                        outdoor_ambience = {
-                            Value = Color3.fromRGB(127, 126, 101)
-                        }
-                        fog = {
-                            FogStart = 150, 
-                            FogEnd = 2000
-                        }
-                        fog_color = {
-                            Value = Color3.fromRGB(147, 130, 109)
-                        }
-                    elseif biome == "tundraoutside" then
-                        ambience = {
-                            Ambient = Color3.fromRGB(20, 20, 20)
-                        }
-                        brightness = {
-                            Value = 1.5
-                        }
-                        outdoor_ambience = {
-                            Value = Color3.fromRGB(136, 136, 136)
-                        }
-                        fog = {
-                            FogStart = 40, 
-                            FogEnd = 200
-                        }
-                        fog_color = {
-                            Value = Color3.fromRGB(240, 255, 240)
-                        }
-                    elseif biome == "tundrainside" or biome == "tundracastle" then
-                        ambience = {
-                            Ambient = Color3.fromRGB(20, 20, 20)
-                        }
-                        brightness = {
-                            Value = 1.5
-                        }
-                        outdoor_ambience = {
-                            Value = Color3.fromRGB(136, 136, 136)
-                        }
-                        fog = {
-                            FogStart = 100, 
-                            FogEnd = 200
-                        }
-                        fog_color = {
-                            Value = Color3.fromRGB(255, 255, 255)
-                        }
-                    elseif biome == "lava" then
-                        ambience = {
-                            Ambient = Color3.fromRGB(20, 20, 20)
-                        }
-                        brightness = {
-                            Value = 0.5
-                        }
-                        outdoor_ambience = {
-                            Value = Color3.fromRGB(239, 15, 15)
-                        }
-                        fog = {
-                            FogStart = 100, 
-                            FogEnd = 1000
-                        }
-                        fog_color = {
-                            Value = Color3.fromRGB(240, 255, 240)
-                        }
-                    elseif biome == "spooky" then
-                        ambience = {
-                            Ambient = Color3.fromRGB(20, 20, 20)
-                        }
-                        brightness = {
-                            Value = 0.5
-                        }
-                        outdoor_ambience = {
-                            Value = Color3.fromRGB(50, 50, 50)
-                        }
-                        fog = {
-                            FogStart = 0, 
-                            FogEnd = 400
-                        }
-                        fog_color = {
-                            Value = Color3.fromRGB(200, 125, 50)
-                        }
-                    elseif biome == "spookytown" then
-                        ambience = {
-                            Ambient = Color3.fromRGB(20, 20, 20)
-                        };
-                        brightness = {
-                            Value = 0.5
-                        };
-                        outdoor_ambience = {
-                            Value = Color3.fromRGB(50, 50, 50)
-                        };
-                        fog = {
-                            FogStart = 0, 
-                            FogEnd = 180
-                        };
-                        fog_color = {
-                            Value = Color3.fromRGB(171, 105, 43)
-                        };
-                    elseif biome == "lightwinter" then
-                        ambience = {
-                            Ambient = Color3.fromRGB(20, 20, 20)
-                        };
-                        brightness = {
-                            Value = 1
-                        };
-                        outdoor_ambience = {
-                            Value = Color3.fromRGB(200, 190, 190)
-                        };
-                        fog = {
-                            FogStart = 200, 
-                            FogEnd = 400
-                        };
-                        fog_color = {
-                            Value = Color3.fromRGB(250, 245, 240)
-                        };
-                    elseif biome == "forestfall" then
-                        ambience = {
-                            Ambient = Color3.fromRGB(20, 20, 20)
-                        };
-                        brightness = {
-                            Value = 1.15
-                        };
-                        outdoor_ambience = {
-                            Value = Color3.fromRGB(211, 163, 163)
-                        };
-                        fog = {
-                            FogStart = 0, 
-                            FogEnd = 750
-                        };
-                        fog_color = {
-                            Value = Color3.fromRGB(208, 175, 123)
-                        };
-                    elseif biome == "forestwinter" then
-                        ambience = {
-                            Ambient = Color3.fromRGB(20, 20, 20)
-                        };
-                        brightness = {
-                            Value = 1.15
-                        };
-                        outdoor_ambience = {
-                            Value = Color3.fromRGB(193, 214, 234)
-                        };
-                        fog = {
-                            FogStart = 0, 
-                            FogEnd = 750
-                        };
-                        fog_color = {
-                            Value = Color3.fromRGB(159, 212, 227)
-                        };
-                    end;
-        
-                    if ambience then
-                        lit.Ambient = ambience.Ambient
+                local area_color
+
+                if biome == "desert" or biome == "oasis" or biome == "deep_desert" then
+                    area_color = lit.desertcolor
+                elseif biome == "tundraoutside" then
+                    area_color = lit.tundracolor
+                elseif biome == "tundrainside" or biome == "tundracastle" then
+                    area_color = lit.tundrainsidecolor
+                elseif biome == "lava_cave" then
+                    area_color = lit.lavacolor
+                else
+                    area_color = lit.defaultcolor
+                end
+
+                if area_color then
+                    lit.areacolor.Brightness = area_color.Brightness
+                    lit.areacolor.Contrast   = area_color.Contrast
+                    lit.areacolor.Saturation = area_color.Saturation
+                    lit.areacolor.TintColor  = area_color.TintColor
+                end
+
+                local sun_rays = biome ~= "tundrainside"
+                            and biome ~= "tundraoutside"
+                            and biome ~= "tundracastle"
+
+                lit.SunRays.Enabled = sun_rays
+
+                if biome == "forest_seasonal" then
+                    biome = (FindFirstChild(workspace, "GaiaFallDecor") and "forestfall")
+                        or (FindFirstChild(workspace, "GaiaWinterDecor") and "forestwinter")
+                        or "forest"
+                end
+
+                local ambience, brightness, outdoor_ambience, fog, fog_color
+
+                if biome == "forest" or biome == "campground" then
+                    ambience = { Ambient = Color3.fromRGB(20, 20, 20) }
+                    brightness = { Value = 1.15 }
+                    outdoor_ambience = { Value = Color3.fromRGB(163, 181, 177) }
+                    fog = { FogStart = 0, FogEnd = 750 }
+                    fog_color = { Value = Color3.fromRGB(91, 159, 157) }
+
+                elseif biome == "darkforest" then
+                    ambience = { Ambient = Color3.fromRGB(20, 20, 20) }
+                    brightness = { Value = 0.6 }
+                    outdoor_ambience = { Value = Color3.fromRGB(163, 181, 177) }
+                    fog = { FogStart = 0, FogEnd = 120 }
+                    fog_color = { Value = Color3.fromRGB(25, 85, 60) }
+
+                elseif biome == "cave" or biome == "theabyss" then
+                    ambience = { Ambient = Color3.fromRGB(20, 20, 20) }
+                    brightness = { Value = 0 }
+                    outdoor_ambience = { Value = Color3.fromRGB(11, 13, 12) }
+                    fog = { FogStart = 0, FogEnd = 80 }
+                    fog_color = { Value = Color3.fromRGB(25, 44, 43) }
+
+                elseif biome == "darkcave" then
+                    ambience = { Ambient = Color3.fromRGB(20, 20, 20) }
+                    brightness = { Value = 0 }
+                    outdoor_ambience = { Value = Color3.fromRGB(11, 13, 12) }
+                    fog = { FogStart = 0, FogEnd = 50 }
+                    fog_color = { Value = Color3.fromRGB(17, 17, 17) }
+
+                elseif biome == "desert" or biome == "oasis" or biome == "deep_desert" then
+                    ambience = { Ambient = Color3.fromRGB(20, 20, 20) }
+                    brightness = { Value = 1.25 }
+                    outdoor_ambience = { Value = Color3.fromRGB(127, 126, 101) }
+                    fog = { FogStart = 150, FogEnd = 2000 }
+                    fog_color = { Value = Color3.fromRGB(147, 130, 109) }
+
+                elseif biome == "tundraoutside" then
+                    ambience = { Ambient = Color3.fromRGB(20, 20, 20) }
+                    brightness = { Value = 1.5 }
+                    outdoor_ambience = { Value = Color3.fromRGB(136, 136, 136) }
+                    fog = { FogStart = 40, FogEnd = 200 }
+                    fog_color = { Value = Color3.fromRGB(240, 255, 240) }
+
+                elseif biome == "tundrainside" or biome == "tundracastle" then
+                    ambience = { Ambient = Color3.fromRGB(20, 20, 20) }
+                    brightness = { Value = 1.5 }
+                    outdoor_ambience = { Value = Color3.fromRGB(136, 136, 136) }
+                    fog = { FogStart = 100, FogEnd = 200 }
+                    fog_color = { Value = Color3.fromRGB(255, 255, 255) }
+
+                elseif biome == "lava_cave" then
+                    ambience = { Ambient = Color3.fromRGB(20, 20, 20) }
+                    brightness = { Value = 0.5 }
+                    outdoor_ambience = { Value = Color3.fromRGB(239, 15, 15) }
+                    fog = { FogStart = 100, FogEnd = 1000 }
+                    fog_color = { Value = Color3.fromRGB(240, 255, 240) }
+
+                elseif biome == "spooky" then
+                    ambience = { Ambient = Color3.fromRGB(20, 20, 20) }
+                    brightness = { Value = 0.5 }
+                    outdoor_ambience = { Value = Color3.fromRGB(50, 50, 50) }
+                    fog = { FogStart = 0, FogEnd = 400 }
+                    fog_color = { Value = Color3.fromRGB(200, 125, 50) }
+
+                elseif biome == "spookytown" then
+                    ambience = { Ambient = Color3.fromRGB(20, 20, 20) }
+                    brightness = { Value = 0.5 }
+                    outdoor_ambience = { Value = Color3.fromRGB(50, 50, 50) }
+                    fog = { FogStart = 0, FogEnd = 180 }
+                    fog_color = { Value = Color3.fromRGB(171, 105, 43) }
+
+                elseif biome == "lightwinter" then
+                    ambience = { Ambient = Color3.fromRGB(20, 20, 20) }
+                    brightness = { Value = 1 }
+                    outdoor_ambience = { Value = Color3.fromRGB(200, 190, 190) }
+                    fog = { FogStart = 200, FogEnd = 400 }
+                    fog_color = { Value = Color3.fromRGB(250, 245, 240) }
+
+                elseif biome == "forestfall" then
+                    ambience = { Ambient = Color3.fromRGB(20, 20, 20) }
+                    brightness = { Value = 1.15 }
+                    outdoor_ambience = { Value = Color3.fromRGB(211, 163, 163) }
+                    fog = { FogStart = 0, FogEnd = 750 }
+                    fog_color = { Value = Color3.fromRGB(208, 175, 123) }
+
+                elseif biome == "forestwinter" then
+                    ambience = { Ambient = Color3.fromRGB(20, 20, 20) }
+                    brightness = { Value = 1.15 }
+                    outdoor_ambience = { Value = Color3.fromRGB(193, 214, 234) }
+                    fog = { FogStart = 0, FogEnd = 750 }
+                    fog_color = { Value = Color3.fromRGB(159, 212, 227) }
+                end
+
+                if ambience then
+                    lit.Ambient = ambience.Ambient
+                end
+                if brightness then
+                    lit.Brightness = brightness.Value
+                end
+                if outdoor_ambience then
+                    lit.OutdoorAmbient = outdoor_ambience.Value
+                end
+                if fog then
+                    if fog.FogEnd then
+                        fog.FogEnd = fog.FogEnd * 1.5
                     end
-        
-                    if brightness then
-                        lit.Brightness = brightness.Value
-                    end
-        
-                    if outdoor_ambience then
-                        lit.OutdoorAmbient = outdoor_ambience.Value
-                    end
-        
-                    if fog then
-                        if fog.FogEnd then
-                            fog.FogEnd = fog.FogEnd * 1.5
-                        end
-                        lit.FogStart = fog.FogStart
-                        lit.FogEnd = fog.FogEnd
-                    end
-        
-                    if fog_color then
-                        lit.FogColor = fog_color.Value
-                    end
+                    lit.FogStart = fog.FogStart
+                    lit.FogEnd = fog.FogEnd
+                end
+                if fog_color then
+                    lit.FogColor = fog_color.Value
                 end
             end
 
@@ -5957,11 +5823,6 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                             set_ambience(last_area_restore)
                         end
                     end
-					
-					local tundra_color = FindFirstChild(lit, "tundracolor")
-					if tundra_color and tundra_color:IsA("ColorCorrectionEffect") then
-						tundra_color.Enabled = true
-					end
             
                     if FindFirstChild(lit, "TimeBrightness") and FindFirstChild(lit, "AreaOutdoor") and FindFirstChild(lit, "AreaFog")  then
                         local time_brightness = lit.TimeBrightness.Value
