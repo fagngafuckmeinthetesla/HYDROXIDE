@@ -5957,6 +5957,11 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                             set_ambience(last_area_restore)
                         end
                     end
+					
+					local tundra_color = FindFirstChild(lit, "tundracolor")
+					if tundra_color and tundra_color:IsA("ColorCorrectionEffect") then
+						tundra_color.Enabled = true
+					end
             
                     if FindFirstChild(lit, "TimeBrightness") and FindFirstChild(lit, "AreaOutdoor") and FindFirstChild(lit, "AreaFog")  then
                         local time_brightness = lit.TimeBrightness.Value
