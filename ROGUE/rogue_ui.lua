@@ -5661,41 +5661,44 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                 local biome = biomeData.biomeName
 
                 local area_color
-
-                if biome == "desert" or biome == "oasis" or biome == "deep_desert" then
+                if biome == "desert" or biome == "oasis" then
                     area_color = lit.desertcolor
                 elseif biome == "tundraoutside" then
                     area_color = lit.tundracolor
                 elseif biome == "tundrainside" or biome == "tundracastle" then
                     area_color = lit.tundrainsidecolor
-                elseif biome == "lava_cave" then
+                elseif biome == "lava" then
                     area_color = lit.lavacolor
                 else
                     area_color = lit.defaultcolor
                 end
 
-                if area_color then
+                if area_color ~= nil then
                     lit.areacolor.Brightness = area_color.Brightness
-                    lit.areacolor.Contrast   = area_color.Contrast
+                    lit.areacolor.Contrast = area_color.Contrast
                     lit.areacolor.Saturation = area_color.Saturation
-                    lit.areacolor.TintColor  = area_color.TintColor
+                    lit.areacolor.TintColor = area_color.TintColor
                 end
 
                 local sun_rays = biome ~= "tundrainside"
                             and biome ~= "tundraoutside"
                             and biome ~= "tundracastle"
 
-                lit.SunRays.Enabled = sun_rays
-
                 if biome == "forest_seasonal" then
-                    biome = (FindFirstChild(workspace, "GaiaFallDecor") and "forestfall")
-                        or (FindFirstChild(workspace, "GaiaWinterDecor") and "forestwinter")
+                    biome = FindFirstChild(workspace, "GaiaFallDecor") and "forestfall" 
+                        or FindFirstChild(workspace, "GaiaWinterDecor") and "forestwinter" 
                         or "forest"
                 end
 
-                local ambience, brightness, outdoor_ambience, fog, fog_color
+                lit.SunRays.Enabled = sun_rays
 
-                if biome == "forest" or biome == "campground" then
+                local ambience = nil
+                local brightness = nil
+                local outdoor_ambience = nil
+                local fog = nil
+                local fog_color = nil
+
+                if biome == "forest" then
                     ambience = { Ambient = Color3.fromRGB(20, 20, 20) }
                     brightness = { Value = 1.15 }
                     outdoor_ambience = { Value = Color3.fromRGB(163, 181, 177) }
@@ -5723,7 +5726,7 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                     fog = { FogStart = 0, FogEnd = 50 }
                     fog_color = { Value = Color3.fromRGB(17, 17, 17) }
 
-                elseif biome == "desert" or biome == "oasis" or biome == "deep_desert" then
+                elseif biome == "desert" or biome == "oasis" then
                     ambience = { Ambient = Color3.fromRGB(20, 20, 20) }
                     brightness = { Value = 1.25 }
                     outdoor_ambience = { Value = Color3.fromRGB(127, 126, 101) }
@@ -5744,7 +5747,7 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                     fog = { FogStart = 100, FogEnd = 200 }
                     fog_color = { Value = Color3.fromRGB(255, 255, 255) }
 
-                elseif biome == "lava_cave" then
+                elseif biome == "lava" then
                     ambience = { Ambient = Color3.fromRGB(20, 20, 20) }
                     brightness = { Value = 0.5 }
                     outdoor_ambience = { Value = Color3.fromRGB(239, 15, 15) }
@@ -5790,12 +5793,15 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                 if ambience then
                     lit.Ambient = ambience.Ambient
                 end
+
                 if brightness then
                     lit.Brightness = brightness.Value
                 end
+
                 if outdoor_ambience then
                     lit.OutdoorAmbient = outdoor_ambience.Value
                 end
+
                 if fog then
                     if fog.FogEnd then
                         fog.FogEnd = fog.FogEnd * 1.5
@@ -5803,6 +5809,7 @@ if game.PlaceId == 3541987450 or game.PlaceId == 5208655184 or game.PlaceId == 1
                     lit.FogStart = fog.FogStart
                     lit.FogEnd = fog.FogEnd
                 end
+
                 if fog_color then
                     lit.FogColor = fog_color.Value
                 end
